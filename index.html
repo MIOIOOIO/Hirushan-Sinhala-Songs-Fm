@@ -54,6 +54,7 @@
     min-height:100%;
     -webkit-font-smoothing:antialiased;
     padding-bottom:env(safe-area-inset-bottom,0px);
+    -webkit-user-select:none; -moz-user-select:none; -ms-user-select:none; user-select:none;
   }
   a{ color:inherit; }
   section{ padding:70px 22px; }
@@ -773,7 +774,7 @@
   html.rgb-on .about, html.rgb-on .schedule, html.rgb-on .contact{ border-top-color:rgba(255,60,60,.7); }
 </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
 
 <div class="rgb-vig" id="rgb-vig" aria-hidden="true"></div>
 <div class="rgb-mist" id="rgb-mist" aria-hidden="true"></div>
@@ -973,6 +974,20 @@
 <script>
 (function(){
   'use strict';
+
+  /* ---- Right-click / context-menu & basic content-copy protection ---- */
+  document.addEventListener('contextmenu', function(e){ e.preventDefault(); }, false);
+  document.addEventListener('dragstart', function(e){ e.preventDefault(); }, false);
+  document.addEventListener('selectstart', function(e){ e.preventDefault(); }, false);
+  // block common "view/save/inspect" keyboard shortcuts
+  document.addEventListener('keydown', function(e){
+    var k = e.key ? e.key.toLowerCase() : '';
+    var blockedCombo =
+      (e.ctrlKey || e.metaKey) && ['u','s','c','x','p','a'].indexOf(k) !== -1 ||
+      k === 'f12' ||
+      ((e.ctrlKey || e.metaKey) && e.shiftKey && ['i','j','c'].indexOf(k) !== -1);
+    if (blockedCombo) e.preventDefault();
+  }, false);
 
   var STREAM_URL = 'https://cp11.radiotrn.com/listen/wowradio/live';
 
